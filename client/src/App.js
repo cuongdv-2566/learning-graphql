@@ -1,49 +1,34 @@
 import React from 'react';
-import { ApolloProvider, Query } from 'react-apollo';
-import gql from 'graphql-tag';
-import ApolloClient from 'apollo-boost';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import logo from './logo.svg';
 import './App.css';
-
-const GET_COIN = gql`
-  query {
-    rates(currency: "USD") {
-      currency
-      rate
-    }
-  }
-`
-
-const QueryList = () => {
-  return (
-    <Query query={GET_COIN}>
-      {({ loading, error, data: { rates } }) => {
-        if (loading) return <div>Loading...</div>;
-        if (error) return <div>Error :(</div>;
-        return (
-          <ul>
-            { rates.map(({ currency, rate }) => <li key={currency}><p>{currency}: {rate}</p></li>) }
-          </ul>
-        )
-      }}
-    </Query>
-  );
-}
-
-const client = new ApolloClient({ uri: "https://48p1r2roz4.sse.codesandbox.io" });
+import Header from './components/Header';
+import LinkList from './components/LinkList';
+import CreateLink from './components/CreateLink';
+import Login from './components/Login';
+import Search from './components/Search';
 
 function App() {
   return (
-    <ApolloProvider client={client}>
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to Apollo</h2>
-        </header>
-        <QueryList />
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <h2>Welcome to Apollo</h2>
+      </header>
+      <div className="center w85">
+        <Header />
+        <div className="ph3 pv1 background-gray">
+          <Switch>
+            <Route exact path="/" render={() => <Redirect to='/new/1' />} />
+            <Route exact path="/create" component={CreateLink} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/search" component={Search} />
+            <Route exact path="/new/:page" component={LinkList} />
+          </Switch>
+        </div>
       </div>
-    </ApolloProvider>
+    </div>
   );
 }
 
